@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "PawnBase.h"
 #include "Components/CapsuleComponent.h"
+#include "ToonTanks/Actors/ProjectileBase.h"
 
 // Sets default values
 APawnBase::APawnBase()
@@ -32,10 +33,21 @@ void APawnBase::RotateTurret(FVector LookAtTarget) {
 }
 
 void APawnBase::Fire() {
-	UE_LOG(LogTemp, Warning, TEXT("BASE Fire"));
+	if(ProjectileClass) {
+		AProjectileBase* TempProjectile = GetWorld()->SpawnActor<AProjectileBase>(
+			ProjectileClass,
+			ProjectileSpawnPoint->GetComponentLocation(),
+			ProjectileSpawnPoint->GetComponentRotation()
+		);
+
+		TempProjectile->SetOwner(this);
+	}
+}
+
+void APawnBase::PawnDestroyed() {
+	HandleDestruction();
 }
 
 void APawnBase::HandleDestruction() {
 	UE_LOG(LogTemp, Warning, TEXT("BASE Desctruction"));
 }
-
